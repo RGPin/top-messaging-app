@@ -1,0 +1,1323 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+  <title>Profile</title>
+
+  <style>
+    :root {
+      --slate-950: #020617;
+      --slate-900: #0f172a;
+      --slate-800: #1e293b;
+      --slate-700: #334155;
+      --slate-500: #64748b;
+      --slate-400: #94a3b8;
+      --slate-100: #f1f5f9;
+
+      --indigo-600: #4f46e5;
+      --indigo-500: #6366f1;
+      --indigo-500-10: rgba(99, 102, 241, 0.1);
+
+      --emerald-500: #10b981;
+      --amber-400: #fbbf24;
+      --red-400: #f87171;
+
+      --shadow: 0 10px 30px rgba(51, 65, 85, 0.2);
+    }
+
+    * {
+      box-sizing: border-box;
+    }
+
+    html,
+    body {
+      margin: 0;
+      min-height: 100%;
+      font-family:
+        Inter,
+        ui-sans-serif,
+        system-ui,
+        -apple-system,
+        BlinkMacSystemFont,
+        "Segoe UI",
+        sans-serif;
+      background: var(--slate-950);
+      color: var(--slate-100);
+    }
+
+    button,
+    input,
+    textarea {
+      font: inherit;
+    }
+
+    button {
+      cursor: pointer;
+    }
+
+    /* ================================
+       APP LAYOUT
+    ================================= */
+
+    .app {
+      display: grid;
+      grid-template-columns: 72px minmax(0, 1fr);
+      min-height: 100vh;
+      background: var(--slate-950);
+    }
+
+    /* ================================
+       NAVIGATION
+    ================================= */
+
+    .nav-rail {
+      display: flex;
+      flex-direction: column;
+      align-items: center;
+      padding: 20px 10px;
+      border-right: 1px solid var(--slate-700);
+      background: var(--slate-900);
+    }
+
+    .logo {
+      width: 42px;
+      height: 42px;
+      display: grid;
+      place-items: center;
+      margin-bottom: 28px;
+      border-radius: 13px;
+      background: var(--indigo-600);
+      color: white;
+      font-size: 17px;
+      font-weight: 800;
+      box-shadow: 0 8px 20px rgba(79, 70, 229, 0.25);
+    }
+
+    .nav-links {
+      display: flex;
+      flex-direction: column;
+      gap: 8px;
+      width: 100%;
+    }
+
+    .nav-button {
+      position: relative;
+      width: 100%;
+      height: 46px;
+      display: grid;
+      place-items: center;
+      border: 0;
+      border-radius: 11px;
+      color: var(--slate-500);
+      background: transparent;
+      transition: 0.2s ease;
+    }
+
+    .nav-button:hover {
+      color: var(--slate-100);
+      background: var(--slate-800);
+    }
+
+    .nav-button.active {
+      color: var(--indigo-500);
+      background: var(--indigo-500-10);
+    }
+
+    .nav-button svg {
+      width: 21px;
+      height: 21px;
+    }
+
+    .notification-dot {
+      position: absolute;
+      top: 8px;
+      right: 8px;
+      width: 7px;
+      height: 7px;
+      border-radius: 50%;
+      background: var(--red-400);
+    }
+
+    .user-mini {
+      margin-top: auto;
+      width: 40px;
+      height: 40px;
+      display: grid;
+      place-items: center;
+      border-radius: 50%;
+      background: linear-gradient(135deg, #6366f1, #8b5cf6);
+      font-size: 13px;
+      font-weight: 700;
+    }
+
+    /* ================================
+       MAIN
+    ================================= */
+
+    .main {
+      min-width: 0;
+      overflow-y: auto;
+      padding: 42px;
+    }
+
+    .content {
+      width: min(920px, 100%);
+      margin: 0 auto;
+    }
+
+    .page-header {
+      margin-bottom: 28px;
+    }
+
+    .page-title {
+      margin: 0;
+      font-size: 28px;
+      letter-spacing: -0.03em;
+    }
+
+    .page-description {
+      margin: 7px 0 0;
+      color: var(--slate-500);
+      font-size: 14px;
+    }
+
+    /* ================================
+       PROFILE HEADER
+    ================================= */
+
+    .profile-card {
+      overflow: hidden;
+      border: 1px solid var(--slate-700);
+      border-radius: 16px;
+      background: var(--slate-900);
+      box-shadow: var(--shadow);
+    }
+
+    .cover {
+      height: 190px;
+      position: relative;
+      background:
+        radial-gradient(
+          circle at 20% 20%,
+          rgba(99, 102, 241, 0.45),
+          transparent 35%
+        ),
+        radial-gradient(
+          circle at 80% 80%,
+          rgba(79, 70, 229, 0.35),
+          transparent 40%
+        ),
+        linear-gradient(
+          135deg,
+          #1e1b4b,
+          #312e81 45%,
+          #1e293b
+        );
+    }
+
+    .cover::after {
+      content: "";
+      position: absolute;
+      inset: 0;
+      background:
+        linear-gradient(
+          120deg,
+          transparent 0 35%,
+          rgba(255,255,255,0.025) 35% 36%,
+          transparent 36% 65%,
+          rgba(255,255,255,0.02) 65% 66%,
+          transparent 66%
+        );
+    }
+
+    .cover-actions {
+      position: absolute;
+      top: 18px;
+      right: 18px;
+      z-index: 2;
+      display: flex;
+      gap: 8px;
+    }
+
+    .cover-button {
+      height: 36px;
+      padding: 0 13px;
+      display: inline-flex;
+      align-items: center;
+      gap: 7px;
+      border: 1px solid rgba(148, 163, 184, 0.3);
+      border-radius: 9px;
+      color: var(--slate-100);
+      background: rgba(15, 23, 42, 0.7);
+      backdrop-filter: blur(8px);
+    }
+
+    .cover-button:hover {
+      background: rgba(30, 41, 59, 0.9);
+    }
+
+    .cover-button svg {
+      width: 15px;
+      height: 15px;
+    }
+
+    /* ================================
+       PROFILE INFO
+    ================================= */
+
+    .profile-info {
+      position: relative;
+      padding: 0 28px 28px;
+    }
+
+    .profile-avatar {
+      position: relative;
+      width: 104px;
+      height: 104px;
+      display: grid;
+      place-items: center;
+      margin-top: -52px;
+      border: 5px solid var(--slate-900);
+      border-radius: 50%;
+      background:
+        linear-gradient(
+          135deg,
+          #6366f1,
+          #8b5cf6
+        );
+      color: white;
+      font-size: 28px;
+      font-weight: 750;
+      box-shadow: 0 8px 25px rgba(0, 0, 0, 0.25);
+    }
+
+    .profile-avatar .online {
+      position: absolute;
+      right: 3px;
+      bottom: 5px;
+      width: 19px;
+      height: 19px;
+      border: 4px solid var(--slate-900);
+      border-radius: 50%;
+      background: var(--emerald-500);
+    }
+
+    .profile-main {
+      display: flex;
+      align-items: flex-start;
+      justify-content: space-between;
+      gap: 20px;
+      margin-top: 12px;
+    }
+
+    .profile-name {
+      margin: 0;
+      font-size: 23px;
+      letter-spacing: -0.02em;
+    }
+
+    .username {
+      margin-top: 4px;
+      color: var(--slate-500);
+      font-size: 13px;
+    }
+
+    .profile-bio {
+      max-width: 650px;
+      margin: 16px 0 0;
+      color: var(--slate-400);
+      font-size: 14px;
+      line-height: 1.6;
+    }
+
+    .message-button {
+      flex: 0 0 auto;
+      height: 40px;
+      padding: 0 16px;
+      display: inline-flex;
+      align-items: center;
+      gap: 8px;
+      border: 0;
+      border-radius: 9px;
+      color: white;
+      background: var(--indigo-600);
+      transition: 0.2s;
+    }
+
+    .message-button:hover {
+      background: var(--indigo-500);
+    }
+
+    .message-button svg {
+      width: 16px;
+      height: 16px;
+    }
+
+    .profile-meta {
+      display: flex;
+      flex-wrap: wrap;
+      gap: 16px;
+      margin-top: 20px;
+      color: var(--slate-500);
+      font-size: 12px;
+    }
+
+    .meta-item {
+      display: inline-flex;
+      align-items: center;
+      gap: 6px;
+    }
+
+    .meta-item svg {
+      width: 15px;
+      height: 15px;
+      color: var(--slate-400);
+    }
+
+    /* ================================
+       STATS
+    ================================= */
+
+    .stats {
+      display: grid;
+      grid-template-columns: repeat(3, 1fr);
+      margin-top: 25px;
+      border-top: 1px solid var(--slate-700);
+      padding-top: 22px;
+    }
+
+    .stat {
+      text-align: center;
+    }
+
+    .stat + .stat {
+      border-left: 1px solid var(--slate-700);
+    }
+
+    .stat-number {
+      font-size: 18px;
+      font-weight: 700;
+    }
+
+    .stat-label {
+      margin-top: 4px;
+      color: var(--slate-500);
+      font-size: 11px;
+    }
+
+    /* ================================
+       SECTIONS
+    ================================= */
+
+    .section-grid {
+      display: grid;
+      grid-template-columns: 1.1fr 0.9fr;
+      gap: 18px;
+      margin-top: 18px;
+    }
+
+    .section-card {
+      border: 1px solid var(--slate-700);
+      border-radius: 14px;
+      background: var(--slate-900);
+      box-shadow: var(--shadow);
+    }
+
+    .section-header {
+      padding: 18px 20px;
+      border-bottom: 1px solid var(--slate-700);
+    }
+
+    .section-title {
+      margin: 0;
+      font-size: 14px;
+      font-weight: 650;
+    }
+
+    .section-body {
+      padding: 20px;
+    }
+
+    /* ================================
+       ABOUT
+    ================================= */
+
+    .about-list {
+      display: flex;
+      flex-direction: column;
+      gap: 17px;
+    }
+
+    .about-item {
+      display: flex;
+      gap: 12px;
+    }
+
+    .about-icon {
+      width: 34px;
+      height: 34px;
+      flex: 0 0 auto;
+      display: grid;
+      place-items: center;
+      border-radius: 9px;
+      color: var(--slate-400);
+      background: var(--slate-800);
+    }
+
+    .about-icon svg {
+      width: 16px;
+      height: 16px;
+    }
+
+    .about-label {
+      color: var(--slate-500);
+      font-size: 11px;
+    }
+
+    .about-value {
+      margin-top: 3px;
+      color: var(--slate-100);
+      font-size: 13px;
+    }
+
+    /* ================================
+       FRIENDS
+    ================================= */
+
+    .friends {
+      display: flex;
+      flex-direction: column;
+      gap: 12px;
+    }
+
+    .friend {
+      display: flex;
+      align-items: center;
+      gap: 10px;
+      padding: 9px;
+      border-radius: 10px;
+      transition: 0.2s;
+    }
+
+    .friend:hover {
+      background: var(--slate-800);
+    }
+
+    .friend-avatar {
+      width: 38px;
+      height: 38px;
+      display: grid;
+      place-items: center;
+      flex: 0 0 auto;
+      border-radius: 50%;
+      background: #312e81;
+      color: #e0e7ff;
+      font-size: 11px;
+      font-weight: 700;
+    }
+
+    .friend-avatar.green {
+      background: #064e3b;
+      color: #a7f3d0;
+    }
+
+    .friend-avatar.orange {
+      background: #78350f;
+      color: #fed7aa;
+    }
+
+    .friend-info {
+      min-width: 0;
+    }
+
+    .friend-name {
+      color: var(--slate-100);
+      font-size: 12px;
+      font-weight: 600;
+    }
+
+    .friend-status {
+      margin-top: 2px;
+      color: var(--slate-500);
+      font-size: 10px;
+    }
+
+    .friend-status.online {
+      color: var(--emerald-500);
+    }
+
+    .view-all {
+      margin-top: 7px;
+      padding: 10px;
+      border: 0;
+      border-radius: 8px;
+      color: var(--indigo-500);
+      background: var(--indigo-500-10);
+      font-size: 12px;
+    }
+
+    .view-all:hover {
+      background: rgba(99, 102, 241, 0.16);
+    }
+
+    /* ================================
+       EDIT MODAL
+    ================================= */
+
+    .modal-overlay {
+      position: fixed;
+      inset: 0;
+      z-index: 20;
+      display: none;
+      place-items: center;
+      padding: 20px;
+      background: rgba(2, 6, 23, 0.75);
+      backdrop-filter: blur(5px);
+    }
+
+    .modal-overlay.open {
+      display: grid;
+    }
+
+    .modal {
+      width: min(520px, 100%);
+      border: 1px solid var(--slate-700);
+      border-radius: 14px;
+      background: var(--slate-900);
+      box-shadow: 0 25px 70px rgba(0, 0, 0, 0.4);
+    }
+
+    .modal-header {
+      display: flex;
+      align-items: center;
+      justify-content: space-between;
+      padding: 18px 20px;
+      border-bottom: 1px solid var(--slate-700);
+    }
+
+    .modal-title {
+      margin: 0;
+      font-size: 15px;
+    }
+
+    .close-button {
+      width: 32px;
+      height: 32px;
+      display: grid;
+      place-items: center;
+      border: 0;
+      border-radius: 8px;
+      color: var(--slate-400);
+      background: transparent;
+    }
+
+    .close-button:hover {
+      background: var(--slate-800);
+      color: var(--slate-100);
+    }
+
+    .modal-body {
+      display: flex;
+      flex-direction: column;
+      gap: 16px;
+      padding: 20px;
+    }
+
+    .field {
+      display: flex;
+      flex-direction: column;
+      gap: 7px;
+    }
+
+    .field label {
+      color: var(--slate-400);
+      font-size: 12px;
+    }
+
+    .field input,
+    .field textarea {
+      width: 100%;
+      border: 1px solid var(--slate-700);
+      border-radius: 9px;
+      outline: none;
+      padding: 10px 12px;
+      color: var(--slate-100);
+      background: var(--slate-800);
+    }
+
+    .field textarea {
+      min-height: 90px;
+      resize: vertical;
+    }
+
+    .field input:focus,
+    .field textarea:focus {
+      border-color: var(--indigo-500);
+      box-shadow: 0 0 0 3px rgba(99, 102, 241, 0.1);
+    }
+
+    .modal-footer {
+      display: flex;
+      justify-content: flex-end;
+      gap: 8px;
+      padding: 16px 20px;
+      border-top: 1px solid var(--slate-700);
+    }
+
+    .secondary-button,
+    .primary-button {
+      height: 38px;
+      padding: 0 14px;
+      border-radius: 8px;
+      font-size: 12px;
+    }
+
+    .secondary-button {
+      border: 1px solid var(--slate-700);
+      color: var(--slate-400);
+      background: var(--slate-800);
+    }
+
+    .secondary-button:hover {
+      color: var(--slate-100);
+    }
+
+    .primary-button {
+      border: 0;
+      color: white;
+      background: var(--indigo-600);
+    }
+
+    .primary-button:hover {
+      background: var(--indigo-500);
+    }
+
+    /* ================================
+       RESPONSIVE
+    ================================= */
+
+    @media (max-width: 800px) {
+      .main {
+        padding: 28px 20px;
+      }
+
+      .section-grid {
+        grid-template-columns: 1fr;
+      }
+    }
+
+    @media (max-width: 600px) {
+      .app {
+        grid-template-columns: 1fr;
+        padding-bottom: 64px;
+      }
+
+      .nav-rail {
+        position: fixed;
+        z-index: 10;
+        right: 0;
+        bottom: 0;
+        left: 0;
+        height: 64px;
+        flex-direction: row;
+        justify-content: space-around;
+        padding: 8px 18px;
+        border-top: 1px solid var(--slate-700);
+        border-right: 0;
+      }
+
+      .logo {
+        display: none;
+      }
+
+      .nav-links {
+        flex-direction: row;
+        justify-content: center;
+        gap: 10px;
+        width: auto;
+      }
+
+      .nav-button {
+        width: 46px;
+      }
+
+      .user-mini {
+        margin: 0;
+      }
+
+      .main {
+        padding: 22px 14px;
+      }
+
+      .page-title {
+        font-size: 24px;
+      }
+
+      .cover {
+        height: 145px;
+      }
+
+      .profile-info {
+        padding: 0 18px 22px;
+      }
+
+      .profile-avatar {
+        width: 88px;
+        height: 88px;
+        margin-top: -44px;
+        font-size: 23px;
+      }
+
+      .profile-main {
+        flex-direction: column;
+      }
+
+      .message-button {
+        width: 100%;
+        justify-content: center;
+      }
+
+      .profile-name {
+        font-size: 21px;
+      }
+
+      .stats {
+        margin-top: 20px;
+      }
+
+      .section-grid {
+        margin-top: 14px;
+      }
+    }
+  </style>
+</head>
+
+<body>
+
+  <div class="app">
+
+    <!-- ============================================
+         NAVIGATION
+    ============================================= -->
+
+    <nav class="nav-rail">
+
+      <div class="logo">M</div>
+
+      <div class="nav-links">
+
+        <!-- Profile -->
+        <button
+          class="nav-button active"
+          title="Profile"
+          onclick="location.href='profile.html'"
+        >
+          <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.8">
+            <circle cx="12" cy="8" r="3.5"></circle>
+            <path d="M5 20c.8-3.4 3.1-5 7-5s6.2 1.6 7 5"></path>
+          </svg>
+        </button>
+
+        <!-- Messages -->
+        <button
+          class="nav-button"
+          title="Messages"
+          onclick="location.href='messages.html'"
+        >
+          <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.8">
+            <path d="M20 11.5a7.5 7.5 0 0 1-7.8 7.5 8.2 8.2 0 0 1-3.3-.7L4 20l1.4-4A7.3 7.3 0 0 1 4.5 12 7.5 7.5 0 0 1 12 4.5 7.5 7.5 0 0 1 20 11.5Z"></path>
+          </svg>
+          <span class="notification-dot"></span>
+        </button>
+
+        <!-- Friends -->
+        <button
+          class="nav-button"
+          title="Friends"
+          onclick="location.href='friends.html'"
+        >
+          <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.8">
+            <circle cx="9" cy="8" r="3"></circle>
+            <path d="M3.5 19c.6-3.1 2.4-4.6 5.5-4.6s4.9 1.5 5.5 4.6"></path>
+            <path d="M16 6.5a2.7 2.7 0 0 1 0 5.3"></path>
+            <path d="M17 14.5c2.2.4 3.5 1.8 4 4"></path>
+          </svg>
+        </button>
+
+      </div>
+
+      <div class="user-mini">JD</div>
+
+    </nav>
+
+
+    <!-- ============================================
+         MAIN CONTENT
+    ============================================= -->
+
+    <main class="main">
+
+      <div class="content">
+
+        <header class="page-header">
+          <h1 class="page-title">Profile</h1>
+          <p class="page-description">
+            Manage your profile and personal information.
+          </p>
+        </header>
+
+
+        <!-- ========================================
+             PROFILE CARD
+        ========================================= -->
+
+        <section class="profile-card">
+
+          <div class="cover">
+
+            <div class="cover-actions">
+
+              <button
+                class="cover-button"
+                id="editButton"
+              >
+                <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2">
+                  <path d="M12 20h9"></path>
+                  <path d="M16.5 3.5a2.1 2.1 0 0 1 3 3L8 18l-4 1 1-4Z"></path>
+                </svg>
+                Edit profile
+              </button>
+
+            </div>
+
+          </div>
+
+
+          <div class="profile-info">
+
+            <div class="profile-avatar">
+              JD
+              <span class="online"></span>
+            </div>
+
+
+            <div class="profile-main">
+
+              <div>
+
+                <h2
+                  class="profile-name"
+                  id="profileName"
+                >
+                  Jordan Davis
+                </h2>
+
+                <div
+                  class="username"
+                  id="profileUsername"
+                >
+                  @jordandavis
+                </div>
+
+                <p
+                  class="profile-bio"
+                  id="profileBio"
+                >
+                  Product designer who loves building simple,
+                  useful things. Coffee enthusiast, weekend
+                  photographer, and always looking for good
+                  conversations.
+                </p>
+
+              </div>
+
+              <button
+                class="message-button"
+                onclick="location.href='messages.html'"
+              >
+                <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.8">
+                  <path d="M20 11.5a7.5 7.5 0 0 1-7.8 7.5 8.2 8.2 0 0 1-3.3-.7L4 20l1.4-4A7.3 7.3 0 0 1 4.5 12 7.5 7.5 0 0 1 12 4.5 7.5 7.5 0 0 1 20 11.5Z"></path>
+                </svg>
+                Message
+              </button>
+
+            </div>
+
+
+            <!-- Metadata -->
+
+            <div class="profile-meta">
+
+              <span class="meta-item">
+                <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.8">
+                  <path d="M20 10c0 5-8 11-8 11S4 15 4 10a8 8 0 1 1 16 0Z"></path>
+                  <circle cx="12" cy="10" r="2.5"></circle>
+                </svg>
+                Manila, Philippines
+              </span>
+
+              <span class="meta-item">
+                <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.8">
+                  <rect x="3" y="5" width="18" height="16" rx="2"></rect>
+                  <path d="M16 3v4M8 3v4M3 10h18"></path>
+                </svg>
+                Joined March 2024
+              </span>
+
+              <span class="meta-item">
+                <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.8">
+                  <circle cx="12" cy="12" r="9"></circle>
+                  <path d="M12 7v5l3 2"></path>
+                </svg>
+                Active now
+              </span>
+
+            </div>
+
+
+            <!-- Stats -->
+
+            <div class="stats">
+
+              <div class="stat">
+                <div class="stat-number">128</div>
+                <div class="stat-label">Friends</div>
+              </div>
+
+              <div class="stat">
+                <div class="stat-number">42</div>
+                <div class="stat-label">Conversations</div>
+              </div>
+
+              <div class="stat">
+                <div class="stat-number">18</div>
+                <div class="stat-label">Mutual friends</div>
+              </div>
+
+            </div>
+
+          </div>
+
+        </section>
+
+
+        <!-- ========================================
+             LOWER SECTIONS
+        ========================================= -->
+
+        <div class="section-grid">
+
+
+          <!-- About -->
+
+          <section class="section-card">
+
+            <header class="section-header">
+              <h3 class="section-title">About</h3>
+            </header>
+
+            <div class="section-body">
+
+              <div class="about-list">
+
+                <div class="about-item">
+
+                  <div class="about-icon">
+                    <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.8">
+                      <rect x="3" y="5" width="18" height="16" rx="2"></rect>
+                      <path d="M16 3v4M8 3v4M3 10h18"></path>
+                    </svg>
+                  </div>
+
+                  <div>
+                    <div class="about-label">Birthday</div>
+                    <div class="about-value">October 12, 1997</div>
+                  </div>
+
+                </div>
+
+
+                <div class="about-item">
+
+                  <div class="about-icon">
+                    <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.8">
+                      <path d="M4 19h16"></path>
+                      <path d="M6 19V9l6-4 6 4v10"></path>
+                      <path d="M9 19v-5h6v5"></path>
+                    </svg>
+                  </div>
+
+                  <div>
+                    <div class="about-label">Works at</div>
+                    <div class="about-value">Northstar Labs</div>
+                  </div>
+
+                </div>
+
+
+                <div class="about-item">
+
+                  <div class="about-icon">
+                    <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.8">
+                      <path d="M4 5h16v14H4z"></path>
+                      <path d="m4 6 8 6 8-6"></path>
+                    </svg>
+                  </div>
+
+                  <div>
+                    <div class="about-label">Email</div>
+                    <div class="about-value">jordan@example.com</div>
+                  </div>
+
+                </div>
+
+
+                <div class="about-item">
+
+                  <div class="about-icon">
+                    <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.8">
+                      <path d="M6 3h4l2 5-2.5 1.8a15 15 0 0 0 4.7 4.7L16 12l5 2v4c0 1.1-.9 2-2 2C10.7 20 4 13.3 4 5a2 2 0 0 1 2-2Z"></path>
+                    </svg>
+                  </div>
+
+                  <div>
+                    <div class="about-label">Phone</div>
+                    <div class="about-value">+63 917 555 0182</div>
+                  </div>
+
+                </div>
+
+              </div>
+
+            </div>
+
+          </section>
+
+
+          <!-- Friends -->
+
+          <section class="section-card">
+
+            <header class="section-header">
+              <h3 class="section-title">Friends</h3>
+            </header>
+
+            <div class="section-body">
+
+              <div class="friends">
+
+                <div class="friend">
+
+                  <div class="friend-avatar">
+                    SC
+                  </div>
+
+                  <div class="friend-info">
+                    <div class="friend-name">Sarah Chen</div>
+                    <div class="friend-status online">Online</div>
+                  </div>
+
+                </div>
+
+
+                <div class="friend">
+
+                  <div class="friend-avatar green">
+                    MJ
+                  </div>
+
+                  <div class="friend-info">
+                    <div class="friend-name">Marcus Johnson</div>
+                    <div class="friend-status online">Online</div>
+                  </div>
+
+                </div>
+
+
+                <div class="friend">
+
+                  <div class="friend-avatar orange">
+                    AM
+                  </div>
+
+                  <div class="friend-info">
+                    <div class="friend-name">Alex Morgan</div>
+                    <div class="friend-status">Offline</div>
+                  </div>
+
+                </div>
+
+
+                <button class="view-all">
+                  View all friends
+                </button>
+
+              </div>
+
+            </div>
+
+          </section>
+
+        </div>
+
+      </div>
+
+    </main>
+
+  </div>
+
+
+  <!-- ================================================
+       EDIT PROFILE MODAL
+  ================================================= -->
+
+  <div
+    class="modal-overlay"
+    id="modalOverlay"
+  >
+
+    <div class="modal">
+
+      <div class="modal-header">
+
+        <h3 class="modal-title">Edit profile</h3>
+
+        <button
+          class="close-button"
+          id="closeModal"
+          aria-label="Close"
+        >
+          <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2">
+            <path d="m6 6 12 12M18 6 6 18"></path>
+          </svg>
+        </button>
+
+      </div>
+
+
+      <form id="profileForm">
+
+        <div class="modal-body">
+
+          <div class="field">
+            <label for="nameInput">Name</label>
+            <input
+              id="nameInput"
+              value="Jordan Davis"
+              required
+            />
+          </div>
+
+          <div class="field">
+            <label for="usernameInput">Username</label>
+            <input
+              id="usernameInput"
+              value="@jordandavis"
+              required
+            />
+          </div>
+
+          <div class="field">
+            <label for="bioInput">Bio</label>
+            <textarea id="bioInput">Product designer who loves building simple, useful things. Coffee enthusiast, weekend photographer, and always looking for good conversations.</textarea>
+          </div>
+
+        </div>
+
+
+        <div class="modal-footer">
+
+          <button
+            type="button"
+            class="secondary-button"
+            id="cancelButton"
+          >
+            Cancel
+          </button>
+
+          <button
+            type="submit"
+            class="primary-button"
+          >
+            Save changes
+          </button>
+
+        </div>
+
+      </form>
+
+    </div>
+
+  </div>
+
+
+  <script>
+    const modal = document.getElementById("modalOverlay");
+    const editButton = document.getElementById("editButton");
+    const closeModal = document.getElementById("closeModal");
+    const cancelButton = document.getElementById("cancelButton");
+    const profileForm = document.getElementById("profileForm");
+
+    const nameInput = document.getElementById("nameInput");
+    const usernameInput = document.getElementById("usernameInput");
+    const bioInput = document.getElementById("bioInput");
+
+    const profileName = document.getElementById("profileName");
+    const profileUsername = document.getElementById("profileUsername");
+    const profileBio = document.getElementById("profileBio");
+
+
+    function openModal() {
+      modal.classList.add("open");
+      nameInput.focus();
+    }
+
+
+    function closeProfileModal() {
+      modal.classList.remove("open");
+    }
+
+
+    editButton.addEventListener("click", openModal);
+
+    closeModal.addEventListener("click", closeProfileModal);
+
+    cancelButton.addEventListener("click", closeProfileModal);
+
+
+    modal.addEventListener("click", event => {
+      if (event.target === modal) {
+        closeProfileModal();
+      }
+    });
+
+
+    document.addEventListener("keydown", event => {
+      if (event.key === "Escape") {
+        closeProfileModal();
+      }
+    });
+
+
+    profileForm.addEventListener("submit", event => {
+
+      event.preventDefault();
+
+      profileName.textContent =
+        nameInput.value.trim() || "Jordan Davis";
+
+      profileUsername.textContent =
+        usernameInput.value.trim() || "@jordandavis";
+
+      profileBio.textContent =
+        bioInput.value.trim() ||
+        "No bio added yet.";
+
+      closeProfileModal();
+
+    });
+  </script>
+
+</body>
+</html>
