@@ -22,14 +22,14 @@
 
 ## Auth:
 
-- passport, session based
+- jwt, access token in httponly
 
 ## Pages:
 
 - login (email, password)
 - signup (name, email, password)
 - profile
-- messages (friend list on the side)
+- messages (friend/conversation list on the side)
 - friends (add, friend requests)
 
 ## Routes:
