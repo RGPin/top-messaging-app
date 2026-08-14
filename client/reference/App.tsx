@@ -1,6 +1,3 @@
-import { Outlet } from "react-router";
-import Sidebar from "./components/Sidebar";
-
 /*
 ## Pages:
 
@@ -38,11 +35,8 @@ Red 400 → errors / rejected
 */
 function App() {
   return (
-    <div>
-      <div>
-        <Sidebar />
-        <Outlet />
-      </div>
+    <div className="bg-slate-950 font-sans text-slate-100">
+      <div className="flex"></div>
     </div>
   );
 }
